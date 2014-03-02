@@ -25,6 +25,10 @@ import com.mongodb.MongoClient;
 import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
+import org.namal.mongo.command.MongoDropCommand;
+import org.namal.mongo.command.MongoFindCommand;
+import org.namal.mongo.command.MongoIndexCommand;
+import org.namal.mongo.command.MongoUpsertCommand;
 import org.namal.mongo.convert.Converter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +54,7 @@ public class MongoCRUD {
 
     public MongoCRUD(Configuration config) {
         this.config = config;
+        initialize();
     }
 
     private synchronized void initialize() {
@@ -82,19 +87,20 @@ public class MongoCRUD {
         }
     }
 
+    public DB getDB() {
+        return db;
+    }
+
     public void setConverter(Converter converter) {
         this.converter = converter;
     }
 
+    public Converter getConverter() {
+        return converter;
+    }
+
     public void drop(String collectionName) {
-        initialize();
-        try {
-            db.requestStart();
-            DBCollection coll = db.getCollection(collectionName);
-            coll.drop();
-        } finally {
-            db.requestDone();
-        }
+        new MongoDropCommand(db, collectionName).execute();
     }
 
     public void createIndex2dsphere(String collectionName, String locationProperty) {
@@ -112,17 +118,7 @@ public class MongoCRUD {
     }
 
     public void createIndex(String collectionName, String property) {
-        initialize();
-        try {
-            db.requestStart();
-            DBCollection coll = db.getCollection(collectionName);
-
-            BasicDBObject obj = new BasicDBObject(property, 1);
-
-            coll.ensureIndex(obj);
-        } finally {
-            db.requestDone();
-        }
+        new MongoIndexCommand(db, collectionName, property).execute();
     }
 
     /**
@@ -135,11 +131,7 @@ public class MongoCRUD {
      * @see #upsert(java.lang.String, java.lang.String)
      */
     public Result upsert(String collectionName, Object obj) {
-        // convert to json
-        String json = converter.toJson(obj);
-
-        // upsert
-        return upsert(collectionName, json);
+        return new MongoUpsertCommand(db, collectionName, obj, converter).execute();
     }
 
     /**
@@ -158,7 +150,8 @@ public class MongoCRUD {
     }
 
     /**
-     * If an _id is supplied on the object it will do an upsert, else will do insert.
+     * If an _id is supplied on the object it will do an upsert, else will do
+     * insert.
      *
      * @param collectionName
      * @param dbObj
@@ -183,32 +176,30 @@ public class MongoCRUD {
         }
     }
 
+    public <T> T findOne(String collectionName, T search) {
+        MongoIterator<T> itr = new MongoFindCommand<>(db, collectionName, search, null, 1, converter).execute();
+        return itr.next();
+    }
+
     public <T> T findOne(String collectionName, String jsonQuery, String jsonProjection) {
-        Iterator<T> result = find(collectionName, jsonQuery, jsonProjection, 1);
-        if (result != null && result.hasNext()) {
-            return result.next();
-        } else {
-            return null;
-        }
+        MongoIterator<T> itr = new MongoFindCommand<T>(db, collectionName, jsonQuery, jsonProjection, 1, converter).execute();
+        return itr.next();
+    }
+
+    public <T> Iterator<T> find(String collectionName, T search) {
+        return new MongoFindCommand<>(db, collectionName, search, null, -1, converter).execute();
     }
 
     public <T> Iterator<T> find(String collectionName, String jsonQuery, String jsonProjection) {
         return find(collectionName, jsonQuery, jsonProjection, -1);
     }
 
+    public <T> Iterator<T> find(String collectionName, T search, int limit) {
+        return new MongoFindCommand<>(db, collectionName, search, null, limit, converter).execute();
+    }
+
     public <T> Iterator<T> find(String collectionName, String jsonQuery, String jsonProjection, int limit) {
-        initialize();
-        DBCollection coll = db.getCollection(collectionName);
-
-        DBObject query = converter.fromJson(jsonQuery, BasicDBObject.class);
-        DBObject projection = converter.fromJson(jsonProjection, BasicDBObject.class);
-
-        DBCursor cur = coll.find(query, projection);
-        if (limit >= 0) {
-            cur = cur.limit(limit);
-        }
-
-        return new MongoIterator<>(cur);
+        return new MongoFindCommand<T>(db, collectionName, jsonQuery, jsonProjection, limit, converter).execute();
     }
 
     public <T> Iterator<T> distinct(String collectionName, String key, String jsonQuery) {
