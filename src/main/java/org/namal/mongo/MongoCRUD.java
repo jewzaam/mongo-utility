@@ -141,7 +141,7 @@ public class MongoCRUD {
      * @param jsonString
      * @return
      */
-    public Result upsert(String collectionName, String jsonString) {
+    protected Result upsert(String collectionName, String jsonString) {
         // convert json to BasicDBObject (a map!)
         DBObject dbObj = converter.fromJson(jsonString, BasicDBObject.class);
 
@@ -157,7 +157,7 @@ public class MongoCRUD {
      * @param dbObj
      * @return
      */
-    public Result upsert(String collectionName, DBObject dbObj) {
+    protected Result upsert(String collectionName, DBObject dbObj) {
         initialize();
         try {
             db.requestStart();
@@ -202,7 +202,7 @@ public class MongoCRUD {
         return new MongoFindCommand<T>(db, collectionName, jsonQuery, jsonProjection, limit, converter).execute();
     }
 
-    public <T> Iterator<T> distinct(String collectionName, String key, String jsonQuery) {
+    protected <T> Iterator<T> distinct(String collectionName, String key, String jsonQuery) {
         initialize();
         DBCollection coll = db.getCollection(collectionName);
 

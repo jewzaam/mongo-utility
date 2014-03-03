@@ -23,7 +23,6 @@ import com.mongodb.WriteResult;
  * @author jewzaam
  */
 public class Result {
-
     private final String error;
     private final int count;
 
@@ -44,5 +43,9 @@ public class Result {
      */
     public int getCount() {
         return count;
+    }
+
+    public boolean isError() {
+        return null == error;
     }
 }
