@@ -19,7 +19,6 @@ package org.namal.mongo.command;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
 
 /**
  *
@@ -30,7 +29,7 @@ public class MongoDropCommand extends HystrixCommand<Boolean> {
     private final String collectionName;
 
     public MongoDropCommand(DB db, String collectionName) {
-        super(HystrixCommandGroupKey.Factory.asKey("MongoDrop"));
+        super(HystrixConfiguration.Setter(MongoDropCommand.class, "MongoDrop"));
         this.db = db;
         this.collectionName = collectionName;
     }

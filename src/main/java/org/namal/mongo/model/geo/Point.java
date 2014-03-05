@@ -21,8 +21,8 @@ import java.util.Map;
 import org.namal.mongo.model.MongoObject;
 
 /**
- * Modeled to work well with MongoDB's structure. Location attribute that is
- * needed for index purposes in MongoDB is captured in a constant.
+ * Modeled to work well with MongoDB's structure. Location attribute that is needed for index purposes in MongoDB is
+ * captured in a constant.
  *
  * @author nmalik
  */
@@ -34,10 +34,6 @@ public class Point extends MongoObject {
 
     public Coordinate getLocation() {
         return loc;
-    }
-
-    public void setCoordinates(double[] coordiantes) {
-        loc.setCoordinates(coordiantes);
     }
 
     public Map<String, Object> getProperties() {

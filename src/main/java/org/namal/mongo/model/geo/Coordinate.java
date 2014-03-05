@@ -22,21 +22,21 @@ package org.namal.mongo.model.geo;
  */
 public class Coordinate {
 
-    private double[] coordinates;
+    private double[] coordinate;
     private final String type = LocationType.Point.toString();
 
     /**
-     * @return the coordinates
+     * @return the coordinate
      */
-    public double[] getCoordinates() {
-        return coordinates;
+    public double[] getCoordinate() {
+        return coordinate;
     }
 
     /**
-     * @param coordinates the coordinates to set
+     * @param coordinate the coordinate to set
      */
-    public void setCoordinates(double[] coordinates) {
-        this.coordinates = coordinates;
+    public void setCoordinate(double[] coordinate) {
+        this.coordinate = coordinate;
     }
 
     /**

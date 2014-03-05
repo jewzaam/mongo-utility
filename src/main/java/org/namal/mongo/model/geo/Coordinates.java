@@ -23,8 +23,7 @@ package org.namal.mongo.model.geo;
 public class Coordinates {
 
     private double[][] coordinates;
-    private String type = LocationType.LineString.toString();
-    private transient LocationType _type = LocationType.LineString;
+    private final String type = LocationType.LineString.toString();
 
     /**
      * @return the coordinates
@@ -44,17 +43,6 @@ public class Coordinates {
      * @return the _type
      */
     public LocationType getType() {
-        return _type;
+        return LocationType.LineString;
     }
-
-    /**
-     * @param _type the _type to set
-     */
-    public void setType(LocationType _type) {
-        if (_type != null) {
-            this.type = _type.toString();
-        }
-        this._type = _type;
-    }
-
 }
