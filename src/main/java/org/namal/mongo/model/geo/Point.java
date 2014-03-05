@@ -16,47 +16,31 @@
  */
 package org.namal.mongo.model.geo;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.namal.mongo.model.MongoObject;
 
 /**
+ * Modeled to work well with MongoDB's structure. Location attribute that is
+ * needed for index purposes in MongoDB is captured in a constant.
  *
  * @author nmalik
  */
-public class Location extends MongoObject {
+public class Point extends MongoObject {
+    public static final String ATTRIBUTE_LOCATION = "loc";
 
-    private double[][] coordinates;
-    private String type;
-    private transient LocationType _type;
+    private final Coordinate loc = new Coordinate();
+    private final Map<String, Object> properties = new HashMap<>();
 
-    /**
-     * @return the coordinates
-     */
-    public double[][] getCoordinates() {
-        return coordinates;
+    public Coordinate getLocation() {
+        return loc;
     }
 
-    /**
-     * @param coordinates the coordinates to set
-     */
-    public void setCoordinates(double[][] coordinates) {
-        this.coordinates = coordinates;
+    public void setCoordinates(double[] coordiantes) {
+        loc.setCoordinates(coordiantes);
     }
 
-    /**
-     * @return the _type
-     */
-    public LocationType getType() {
-        return _type;
+    public Map<String, Object> getProperties() {
+        return properties;
     }
-
-    /**
-     * @param _type the _type to set
-     */
-    public void setType(LocationType _type) {
-        if (_type != null) {
-            this.type = _type.toString();
-        }
-        this._type = _type;
-    }
-
 }

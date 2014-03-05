@@ -19,7 +19,6 @@ package org.namal.mongo;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import java.net.UnknownHostException;
@@ -30,6 +29,7 @@ import org.namal.mongo.command.MongoFindCommand;
 import org.namal.mongo.command.MongoIndexCommand;
 import org.namal.mongo.command.MongoUpsertCommand;
 import org.namal.mongo.convert.Converter;
+import org.namal.mongo.convert.GsonConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +85,9 @@ public class MongoCRUD {
         } catch (UnknownHostException ex) {
             throw new RuntimeException("Unable to configure mongo", ex);
         }
+
+        // set default converter. can be overriden
+        converter = new GsonConverter();
     }
 
     public DB getDB() {
@@ -104,7 +107,6 @@ public class MongoCRUD {
     }
 
     public void createIndex2dsphere(String collectionName, String locationProperty) {
-        initialize();
         try {
             db.requestStart();
             DBCollection coll = db.getCollection(collectionName);

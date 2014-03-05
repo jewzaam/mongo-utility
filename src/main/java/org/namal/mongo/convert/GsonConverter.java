@@ -17,13 +17,12 @@
 package org.namal.mongo.convert;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
-import org.namal.mongo.model.geo.LocationType;
 
 /**
- * Simple converter that uses Gson. Performance is not great per various performance benchmarks but it works.
+ * Simple converter that uses Gson. Performance is not great per various
+ * performance benchmarks but it works.
  *
  * @author nmalik
  */
@@ -31,7 +30,8 @@ public class GsonConverter implements Converter {
     private static final Gson GSON = new Gson();
 
     /**
-     * If using this API you must be careful about the return type of your code, use the concrete class you need.
+     * If using this API you must be careful about the return type of your code,
+     * use the concrete class you need.
      *
      * @param <T>
      * @param jsonString
