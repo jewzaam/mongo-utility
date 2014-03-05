@@ -30,6 +30,7 @@ import org.namal.mongo.command.MongoFindCommand;
 import org.namal.mongo.command.MongoIndexCommand;
 import org.namal.mongo.command.MongoUpsertCommand;
 import org.namal.mongo.convert.Converter;
+import org.namal.mongo.convert.GsonConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +62,9 @@ public class MongoCRUD {
         if (null != db) {
             return;
         }
+        
+        // create default converter
+        converter = new GsonConverter();
 
         // call to coalesce has this priority: configuration, openshift, localhost defaults
         String dbHost = coalesce(config.getHost(), System.getenv("OPENSHIFT_MONGODB_DB_HOST"), null);

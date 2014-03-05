@@ -28,8 +28,7 @@ import org.namal.mongo.MongoIterator;
 import org.namal.mongo.convert.Converter;
 
 /**
- * Uses Hystrix to isolate your application from a misbehaving database. Default
- * configuration is used.
+ * Uses Hystrix to isolate your application from a misbehaving database. Default configuration is used.
  *
  * @author jewzaam
  */
@@ -43,7 +42,7 @@ public class MongoFindCommand<T> extends HystrixCommand<MongoIterator<T>> {
     private final Converter converter;
 
     public MongoFindCommand(DB db, String collectionName, T search, String jsonProjection, int limit, Converter converter) {
-        super(HystrixCommandGroupKey.Factory.asKey("MongoLoad:" + search.getClass().getSimpleName()));
+        super(HystrixConfiguration.Setter(MongoFindCommand.class, "MongoLoad:" + search.getClass().getSimpleName()));
         this.db = db;
         this.collectionName = collectionName;
         this.search = search;
@@ -54,9 +53,9 @@ public class MongoFindCommand<T> extends HystrixCommand<MongoIterator<T>> {
     }
 
     public MongoFindCommand(DB db, String collectionName, String jsonQuery, String jsonProjection, int limit, Converter converter) {
-        super(HystrixCommandGroupKey.Factory.asKey("MongoLoad:" + new TypeToken<T>() {
-        }.getRawType().getSimpleName()));
         // using gson reflection TypeToken to get at the generic class T at runtime.
+        super(HystrixConfiguration.Setter(MongoFindCommand.class, "MongoLoad:" + new TypeToken<T>() {
+        }.getRawType().getSimpleName()));
         this.db = db;
         this.collectionName = collectionName;
         this.search = null;

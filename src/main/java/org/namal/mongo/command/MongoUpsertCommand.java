@@ -26,8 +26,7 @@ import org.namal.mongo.Result;
 import org.namal.mongo.convert.Converter;
 
 /**
- * Uses Hystrix to isolate your application from a misbehaving database. Default
- * configuration is used.
+ * Uses Hystrix to isolate your application from a misbehaving database. Default configuration is used.
  *
  * @author jewzaam
  */
@@ -39,7 +38,7 @@ public class MongoUpsertCommand extends HystrixCommand<Result> {
     private final Converter converter;
 
     public MongoUpsertCommand(DB db, String collectionName, Object upsert, Converter converter) {
-        super(HystrixCommandGroupKey.Factory.asKey("MongoUpsert:" + upsert.getClass().getSimpleName()));
+        super(HystrixConfiguration.Setter(MongoUpsertCommand.class, "MongoUpsert:" + upsert.getClass().getSimpleName()));
         this.db = db;
         this.collectionName = collectionName;
         this.upsert = upsert;

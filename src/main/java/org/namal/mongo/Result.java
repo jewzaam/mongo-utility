@@ -46,6 +46,6 @@ public class Result {
     }
 
     public boolean isError() {
-        return null == error;
+        return null != error;
     }
 }

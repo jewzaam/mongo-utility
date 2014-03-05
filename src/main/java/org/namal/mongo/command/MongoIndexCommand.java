@@ -20,7 +20,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
 
 /**
  *
@@ -32,7 +31,7 @@ public class MongoIndexCommand extends HystrixCommand<Boolean> {
     private final String propertyName;
 
     public MongoIndexCommand(DB db, String collectionName, String propertyName) {
-        super(HystrixCommandGroupKey.Factory.asKey("MongoDrop"));
+        super(HystrixConfiguration.Setter(MongoIndexCommand.class, "MongoIndex"));
         this.db = db;
         this.collectionName = collectionName;
         this.propertyName = propertyName;
