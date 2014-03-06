@@ -1,32 +1,33 @@
 /*
  * Copyright (C) 2014 Naveen Malik
  *
- * Needless Compass is free software: you can redistribute it and/or modify
+ * mongo-utility is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Needless Compass is distributed in the hope that it will be useful,
+ * mongo-utility is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Needless Compass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with mongo-utility.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.namal.mongo.command;
 
+import org.jewzaam.hystrix.configuration.HystrixConfiguration;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
 import org.namal.mongo.Result;
 import org.namal.mongo.convert.Converter;
 
 /**
- * Uses Hystrix to isolate your application from a misbehaving database. Default configuration is used.
+ * Uses Hystrix to isolate your application from a misbehaving database. Default
+ * configuration is used.
  *
  * @author jewzaam
  */

@@ -16,6 +16,7 @@
  */
 package org.namal.mongo.command;
 
+import org.jewzaam.hystrix.configuration.HystrixConfiguration;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;

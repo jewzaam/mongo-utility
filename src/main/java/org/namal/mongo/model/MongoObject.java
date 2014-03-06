@@ -22,7 +22,8 @@ import java.util.Date;
 import java.util.concurrent.Semaphore;
 
 /**
- * Base mongo object that sets a value for _id that's a string based on System.currentTimeMillis().
+ * Base mongo object that sets a value for _id that's a string based on
+ * System.currentTimeMillis().
  *
  * @author jewzaam
  */
@@ -47,7 +48,8 @@ public abstract class MongoObject {
 
     /**
      *
-     * @throws InterruptedException unable to acquire lock to get next sequence value
+     * @throws InterruptedException unable to acquire lock to get next sequence
+     * value
      */
     public MongoObject() {
         // default the _id

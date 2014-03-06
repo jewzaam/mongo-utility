@@ -19,6 +19,7 @@ package org.namal.mongo.command;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.netflix.hystrix.HystrixCommand;
+import org.jewzaam.hystrix.configuration.HystrixConfiguration;
 
 /**
  *
