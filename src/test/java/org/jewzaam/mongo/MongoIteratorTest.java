@@ -14,30 +14,38 @@
  * You should have received a copy of the GNU General Public License
  * along with mongo-utility.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.namal.mongo.model;
+package org.jewzaam.mongo;
 
-import org.json.JSONException;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import org.junit.Assert;
 import org.junit.Test;
-import org.namal.mongo.convert.Converter;
-import org.namal.mongo.convert.GsonConverter;
-import org.namal.mongo.model.geo.LocationType;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 /**
- * Test the bits of Gson that we need documented or verified.
  *
- * @author nmalik
+ * @author jewzaam
  */
-public class LocationTypeTest {
-
-    Converter converter = new GsonConverter();
+public class MongoIteratorTest extends AbstractMongoTest {
 
     @Test
-    public void gson() throws JSONException {
-        // easiest to just name enum values the same as the value you want serialized
-        LocationType type = LocationType.LineString;
-        String json = converter.toJson(type);
+    public void next() {
+        String collectionName = "test";
+        TestModel obj = new TestModel();
+        obj.name = "foo";
+        crud.upsert(collectionName, obj);
 
-        JSONAssert.assertEquals('"' + type.toString() + '"', json, false);
+        DB db = crud.getDB();
+
+        DBCollection coll = db.getCollection(collectionName);
+
+        DBCursor cur = coll.find(null, null);
+
+        MongoIterator<TestModel> itr = new MongoIterator<>(cur, TestModel.class);
+
+        Assert.assertTrue(itr.hasNext());
+        TestModel found = itr.next();
+
+        Assert.assertNotNull(found);
     }
 }

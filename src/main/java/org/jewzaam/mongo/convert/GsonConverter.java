@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with mongo-utility.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.namal.mongo.convert;
+package org.jewzaam.mongo.convert;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -47,6 +47,11 @@ public class GsonConverter implements Converter {
     @Override
     public <T> T fromJson(String jsonString, Class<T> clazz) {
         return GSON.fromJson(jsonString, clazz);
+    }
+
+    @Override
+    public <T> T fromJson(String jsonString, Type type) {
+        return GSON.fromJson(jsonString, type);
     }
 
     @Override

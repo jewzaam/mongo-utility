@@ -23,8 +23,8 @@ import com.mongodb.DBObject;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
-import org.namal.mongo.Result;
-import org.namal.mongo.convert.Converter;
+import org.jewzaam.mongo.Result;
+import org.jewzaam.mongo.convert.Converter;
 
 /**
  * Uses Hystrix to isolate your application from a misbehaving database. Default

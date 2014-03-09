@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with mongo-utility.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.namal.mongo.model.geo;
+package org.jewzaam.mongo.model.geo;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.namal.mongo.model.MongoObject;
+import org.jewzaam.mongo.model.MongoObject;
 
 /**
  * Modeled to work well with MongoDB's structure. Location attribute that is

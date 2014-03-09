@@ -16,7 +16,6 @@
  */
 package org.namal.mongo.command;
 
-import com.google.gson.reflect.TypeToken;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -25,14 +24,15 @@ import com.mongodb.DBObject;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
-import org.namal.mongo.MongoIterator;
-import org.namal.mongo.convert.Converter;
+import org.jewzaam.mongo.MongoIterator;
+import org.jewzaam.mongo.convert.Converter;
 
 /**
  * Uses Hystrix to isolate your application from a misbehaving database. Default
  * configuration is used.
  *
  * @author jewzaam
+ * @param <T>
  */
 public class MongoFindCommand<T> extends HystrixCommand<MongoIterator<T>> {
     private final DB db;
@@ -42,8 +42,21 @@ public class MongoFindCommand<T> extends HystrixCommand<MongoIterator<T>> {
     private final String jsonProjection;
     private final int limit;
     private final Converter converter;
+    private final Class clazz;
 
-    public MongoFindCommand(DB db, String collectionName, T search, String jsonProjection, int limit, Converter converter) {
+    /**
+     * Create a command to execute a Find.
+     *
+     * @param db the DB object
+     * @param collectionName name of collection
+     * @param search search object
+     * @param jsonProjection projection if want subset of results
+     * @param limit number of objects to return, less than 0 indicates all
+     * @param converter converter implementation to use
+     * @param clazz the Class of object finding
+     */
+    public MongoFindCommand(DB db, String collectionName, T search, String jsonProjection,
+            int limit, Converter converter, Class<T> clazz) {
         super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("MongoFind"))
                 .andCommandKey(HystrixCommandKey.Factory.asKey("MongoFind"))
         );
@@ -55,9 +68,21 @@ public class MongoFindCommand<T> extends HystrixCommand<MongoIterator<T>> {
         this.jsonProjection = jsonProjection;
         this.limit = limit;
         this.converter = converter;
+        this.clazz = clazz;
     }
 
-    public MongoFindCommand(DB db, String collectionName, String jsonQuery, String jsonProjection, int limit, Converter converter) {
+    /**
+     * Create a command to execute a Find.
+     *
+     * @param db the DB object
+     * @param collectionName name of collection
+     * @param jsonQuery the query to execute
+     * @param jsonProjection projection if want subset of results
+     * @param limit number of objects to return, less than 0 indicates all
+     * @param converter converter implementation to use
+     * @param clazz the Class of object finding
+     */
+    public MongoFindCommand(DB db, String collectionName, String jsonQuery, String jsonProjection, int limit, Converter converter, Class<T> clazz) {
         super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("MongoFind"))
                 .andCommandKey(HystrixCommandKey.Factory.asKey("MongoFind"))
         );
@@ -68,6 +93,7 @@ public class MongoFindCommand<T> extends HystrixCommand<MongoIterator<T>> {
         this.jsonProjection = jsonProjection;
         this.limit = limit;
         this.converter = converter;
+        this.clazz = clazz;
     }
 
     @Override
@@ -89,6 +115,6 @@ public class MongoFindCommand<T> extends HystrixCommand<MongoIterator<T>> {
             cur = cur.limit(limit);
         }
 
-        return new MongoIterator<>(cur);
+        return new MongoIterator<>(cur, clazz);
     }
 }

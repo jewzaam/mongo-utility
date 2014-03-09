@@ -14,38 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with mongo-utility.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.namal.mongo;
+package org.jewzaam.mongo;
 
-import com.mongodb.WriteResult;
+import org.jewzaam.mongo.model.MongoObject;
 
 /**
  *
  * @author jewzaam
  */
-public class Result {
-    private final String error;
-    private final int count;
-
-    public Result(WriteResult result) {
-        error = result.getError();
-        count = result.getN();
-    }
-
-    /**
-     * @return the error
-     */
-    public String getError() {
-        return error;
-    }
-
-    /**
-     * @return the count
-     */
-    public int getCount() {
-        return count;
-    }
-
-    public boolean isError() {
-        return null != error;
-    }
+public class TestModel extends MongoObject {
+    public String name;
 }

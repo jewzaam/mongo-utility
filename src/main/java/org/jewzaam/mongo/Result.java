@@ -14,16 +14,38 @@
  * You should have received a copy of the GNU General Public License
  * along with mongo-utility.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.namal.mongo.convert;
+package org.jewzaam.mongo;
+
+import com.mongodb.WriteResult;
 
 /**
  *
- * @author nmalik
+ * @author jewzaam
  */
-public interface Converter {
-    public <T> T fromJson(String jsonString);
+public class Result {
+    private final String error;
+    private final int count;
 
-    public <T> T fromJson(String jsonString, Class<T> clazz);
+    public Result(WriteResult result) {
+        error = result.getError();
+        count = result.getN();
+    }
 
-    public String toJson(Object obj);
+    /**
+     * @return the error
+     */
+    public String getError() {
+        return error;
+    }
+
+    /**
+     * @return the count
+     */
+    public int getCount() {
+        return count;
+    }
+
+    public boolean isError() {
+        return null != error;
+    }
 }

@@ -14,21 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with mongo-utility.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.namal.mongo;
+package org.jewzaam.mongo;
 
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import java.util.Iterator;
-import org.namal.mongo.convert.Converter;
-import org.namal.mongo.convert.GsonConverter;
+import org.jewzaam.mongo.convert.Converter;
+import org.jewzaam.mongo.convert.GsonConverter;
 
 /**
  *
  * @author nmalik
+ * @param <T>
  */
 public class MongoIterator<T> implements Iterator<T> {
     private final DBCursor cur;
     private final Converter converter;
+    private final Class clazz;
 
     /**
      * Create an iterator with converter set to GsonConverter.
@@ -36,8 +38,9 @@ public class MongoIterator<T> implements Iterator<T> {
      * @param cur
      * @param clazz
      */
-    public MongoIterator(DBCursor cur) {
+    public MongoIterator(DBCursor cur, Class<T> clazz) {
         this.cur = cur;
+        this.clazz = clazz;
         converter = new GsonConverter();
     }
 
@@ -50,7 +53,7 @@ public class MongoIterator<T> implements Iterator<T> {
     public T next() {
         DBObject dbObj = cur.next();
         String json = converter.toJson(dbObj);
-        return (T) converter.fromJson(json);
+        return (T) converter.fromJson(json, clazz);
     }
 
     @Override

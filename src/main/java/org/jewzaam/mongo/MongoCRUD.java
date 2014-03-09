@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with mongo-utility.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.namal.mongo;
+package org.jewzaam.mongo;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -28,8 +28,8 @@ import org.namal.mongo.command.MongoDropCommand;
 import org.namal.mongo.command.MongoFindCommand;
 import org.namal.mongo.command.MongoIndexCommand;
 import org.namal.mongo.command.MongoUpsertCommand;
-import org.namal.mongo.convert.Converter;
-import org.namal.mongo.convert.GsonConverter;
+import org.jewzaam.mongo.convert.Converter;
+import org.jewzaam.mongo.convert.GsonConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -182,29 +182,29 @@ public class MongoCRUD {
     }
 
     public <T> T findOne(String collectionName, T search) {
-        MongoIterator<T> itr = new MongoFindCommand<>(db, collectionName, search, null, 1, converter).execute();
+        MongoIterator<T> itr = new MongoFindCommand<>(db, collectionName, search, null, 1, converter, (Class<T>) search.getClass()).execute();
         return itr.next();
     }
 
-    public <T> T findOne(String collectionName, String jsonQuery, String jsonProjection) {
-        MongoIterator<T> itr = new MongoFindCommand<T>(db, collectionName, jsonQuery, jsonProjection, 1, converter).execute();
+    public <T> T findOne(String collectionName, String jsonQuery, String jsonProjection, Class<T> clazz) {
+        MongoIterator<T> itr = new MongoFindCommand<>(db, collectionName, jsonQuery, jsonProjection, 1, converter, clazz).execute();
         return itr.next();
     }
 
     public <T> Iterator<T> find(String collectionName, T search) {
-        return new MongoFindCommand<>(db, collectionName, search, null, -1, converter).execute();
+        return new MongoFindCommand<>(db, collectionName, search, null, -1, converter, (Class<T>) search.getClass()).execute();
     }
 
-    public <T> Iterator<T> find(String collectionName, String jsonQuery, String jsonProjection) {
-        return find(collectionName, jsonQuery, jsonProjection, -1);
+    public <T> Iterator<T> find(String collectionName, String jsonQuery, String jsonProjection, Class<T> clazz) {
+        return find(collectionName, jsonQuery, jsonProjection, -1, clazz);
     }
 
     public <T> Iterator<T> find(String collectionName, T search, int limit) {
-        return new MongoFindCommand<>(db, collectionName, search, null, limit, converter).execute();
+        return new MongoFindCommand<>(db, collectionName, search, null, limit, converter, (Class<T>) search.getClass()).execute();
     }
 
-    public <T> Iterator<T> find(String collectionName, String jsonQuery, String jsonProjection, int limit) {
-        return new MongoFindCommand<T>(db, collectionName, jsonQuery, jsonProjection, limit, converter).execute();
+    public <T> Iterator<T> find(String collectionName, String jsonQuery, String jsonProjection, int limit, Class<T> clazz) {
+        return new MongoFindCommand<>(db, collectionName, jsonQuery, jsonProjection, limit, converter, clazz).execute();
     }
 
     protected <T> Iterator<T> distinct(String collectionName, String key, String jsonQuery) {

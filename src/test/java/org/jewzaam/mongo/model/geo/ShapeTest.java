@@ -14,35 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with mongo-utility.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.namal.mongo.model.geo;
+package org.jewzaam.mongo.model.geo;
+
+import org.jewzaam.mongo.AbstractMongoTest;
+import org.junit.Test;
 
 /**
+ * Verify things about point.
  *
- * @author nmalik
+ * @author jewzaam
  */
-public class Coordinate {
-
-    private double[] coordinate;
-    private final String type = LocationType.Point.toString();
+public class ShapeTest extends AbstractMongoTest {
 
     /**
-     * @return the coordinate
+     * Verify that 2dsphere index on point works
      */
-    public double[] getCoordinate() {
-        return coordinate;
-    }
+    @Test
+    public void test2dsphere() {
+        String collectionName = "testpoint";
+        Shape shape = new Shape();
+        shape.setOwner("default");
+        shape.getLocation().setCoordinates(new double[][]{{35.662709, -78.63383600000002}, {35.662708, -78.63383600000001}});
+        crud.upsert(collectionName, shape);
 
-    /**
-     * @param coordinate the coordinate to set
-     */
-    public void setCoordinate(double[] coordinate) {
-        this.coordinate = coordinate;
-    }
-
-    /**
-     * @return the _type
-     */
-    public LocationType getType() {
-        return LocationType.Point;
+        crud.createIndex2dsphere(collectionName, Shape.ATTRIBUTE_LOCATION);
     }
 }
