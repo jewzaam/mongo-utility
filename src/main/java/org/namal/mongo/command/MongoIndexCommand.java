@@ -16,11 +16,12 @@
  */
 package org.namal.mongo.command;
 
-import org.jewzaam.hystrix.configuration.HystrixConfiguration;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
 
 /**
  *
@@ -32,7 +33,9 @@ public class MongoIndexCommand extends HystrixCommand<Boolean> {
     private final String propertyName;
 
     public MongoIndexCommand(DB db, String collectionName, String propertyName) {
-        super(HystrixConfiguration.Setter(MongoIndexCommand.class, "MongoIndex"));
+        super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("MongoIndex"))
+                .andCommandKey(HystrixCommandKey.Factory.asKey("MongoIndex"))
+        );
         this.db = db;
         this.collectionName = collectionName;
         this.propertyName = propertyName;

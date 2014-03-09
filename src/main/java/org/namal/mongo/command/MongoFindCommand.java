@@ -16,7 +16,6 @@
  */
 package org.namal.mongo.command;
 
-import org.jewzaam.hystrix.configuration.HystrixConfiguration;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -24,6 +23,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
 import org.namal.mongo.MongoIterator;
 import org.namal.mongo.convert.Converter;
 
@@ -43,7 +44,10 @@ public class MongoFindCommand<T> extends HystrixCommand<MongoIterator<T>> {
     private final Converter converter;
 
     public MongoFindCommand(DB db, String collectionName, T search, String jsonProjection, int limit, Converter converter) {
-        super(HystrixConfiguration.Setter(MongoFindCommand.class, "MongoLoad:" + search.getClass().getSimpleName()));
+        super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("MongoFind"))
+                .andCommandKey(HystrixCommandKey.Factory.asKey("MongoFind"))
+        );
+
         this.db = db;
         this.collectionName = collectionName;
         this.search = search;
@@ -54,9 +58,9 @@ public class MongoFindCommand<T> extends HystrixCommand<MongoIterator<T>> {
     }
 
     public MongoFindCommand(DB db, String collectionName, String jsonQuery, String jsonProjection, int limit, Converter converter) {
-        // using gson reflection TypeToken to get at the generic class T at runtime.
-        super(HystrixConfiguration.Setter(MongoFindCommand.class, "MongoLoad:" + new TypeToken<T>() {
-        }.getRawType().getSimpleName()));
+        super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("MongoFind"))
+                .andCommandKey(HystrixCommandKey.Factory.asKey("MongoFind"))
+        );
         this.db = db;
         this.collectionName = collectionName;
         this.search = null;

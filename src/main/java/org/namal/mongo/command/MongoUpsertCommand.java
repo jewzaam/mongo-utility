@@ -16,12 +16,13 @@
  */
 package org.namal.mongo.command;
 
-import org.jewzaam.hystrix.configuration.HystrixConfiguration;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
 import org.namal.mongo.Result;
 import org.namal.mongo.convert.Converter;
 
@@ -39,7 +40,9 @@ public class MongoUpsertCommand extends HystrixCommand<Result> {
     private final Converter converter;
 
     public MongoUpsertCommand(DB db, String collectionName, Object upsert, Converter converter) {
-        super(HystrixConfiguration.Setter(MongoUpsertCommand.class, "MongoUpsert:" + upsert.getClass().getSimpleName()));
+        super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("MongoUpsert"))
+                .andCommandKey(HystrixCommandKey.Factory.asKey("MongoUpsert"))
+        );
         this.db = db;
         this.collectionName = collectionName;
         this.upsert = upsert;
