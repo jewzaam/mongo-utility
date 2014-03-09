@@ -183,12 +183,12 @@ public class MongoCRUD {
 
     public <T> T findOne(String collectionName, T search) {
         MongoIterator<T> itr = new MongoFindCommand<>(db, collectionName, search, null, 1, converter, (Class<T>) search.getClass()).execute();
-        return itr.next();
+        return itr.hasNext() ? itr.next() : null;
     }
 
     public <T> T findOne(String collectionName, String jsonQuery, String jsonProjection, Class<T> clazz) {
         MongoIterator<T> itr = new MongoFindCommand<>(db, collectionName, jsonQuery, jsonProjection, 1, converter, clazz).execute();
-        return itr.next();
+        return itr.hasNext() ? itr.next() : null;
     }
 
     public <T> Iterator<T> find(String collectionName, T search) {

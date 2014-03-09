@@ -46,12 +46,13 @@ public abstract class MongoObject {
 
     private String last_updated_by;
 
-    /**
-     *
-     * @throws InterruptedException unable to acquire lock to get next sequence
-     * value
-     */
     public MongoObject() {
+    }
+    
+    /**
+     * Sets new value for _id and defaults creation date and last update date to current timestamp.
+     */
+    public void initialize() {
         // default the _id
         try {
             sem.acquire();
