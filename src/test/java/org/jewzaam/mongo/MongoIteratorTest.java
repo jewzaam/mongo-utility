@@ -31,7 +31,7 @@ public class MongoIteratorTest extends AbstractMongoTest {
     @Test
     public void next() {
         String collectionName = "test";
-        TestModel obj = new TestModel();
+        TestModel obj = new TestModel().initialize();
         obj.name = "foo";
         crud.upsert(collectionName, obj);
 

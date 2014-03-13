@@ -52,7 +52,7 @@ public abstract class MongoObject {
     /**
      * Sets new value for _id and defaults creation date and last update date to current timestamp.
      */
-    public void initialize() {
+    public <T> T initialize() {
         // default the _id
         try {
             sem.acquire();
@@ -66,6 +66,8 @@ public abstract class MongoObject {
         Date date = new Date();
         setCreationDate(date);
         setLastUpdateDate(date);
+        
+        return (T) this;
     }
 
     /**
