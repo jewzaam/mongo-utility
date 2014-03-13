@@ -24,10 +24,10 @@ import com.mongodb.MongoClient;
 import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
-import org.namal.mongo.command.MongoDropCommand;
-import org.namal.mongo.command.MongoFindCommand;
-import org.namal.mongo.command.MongoIndexCommand;
-import org.namal.mongo.command.MongoUpsertCommand;
+import org.jewzaam.mongo.command.MongoDropCommand;
+import org.jewzaam.mongo.command.MongoFindCommand;
+import org.jewzaam.mongo.command.MongoIndexCommand;
+import org.jewzaam.mongo.command.MongoUpsertCommand;
 import org.jewzaam.mongo.convert.Converter;
 import org.jewzaam.mongo.convert.GsonConverter;
 import org.slf4j.Logger;
@@ -162,23 +162,8 @@ public class MongoCRUD {
      * @param dbObj
      * @return
      */
-    protected Result upsert(String collectionName, DBObject dbObj) {
-        initialize();
-        try {
-            db.requestStart();
-            DBCollection coll = db.getCollection(collectionName);
-
-            if (dbObj.get("_id") != null) {
-                BasicDBObject query = new BasicDBObject()
-                        .append("_id", dbObj.get("_id"));
-
-                return new Result(coll.update(query, dbObj, true, false));
-            } else {
-                return new Result(coll.insert(dbObj));
-            }
-        } finally {
-            db.requestDone();
-        }
+    public Result upsert(String collectionName, DBObject dbObj) {
+        return new MongoUpsertCommand(db, collectionName, dbObj, converter).execute();
     }
 
     public <T> T findOne(String collectionName, T search) {

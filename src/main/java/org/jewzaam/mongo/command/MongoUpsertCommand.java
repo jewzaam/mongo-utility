@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with mongo-utility.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.namal.mongo.command;
+package org.jewzaam.mongo.command;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -27,8 +27,7 @@ import org.jewzaam.mongo.Result;
 import org.jewzaam.mongo.convert.Converter;
 
 /**
- * Uses Hystrix to isolate your application from a misbehaving database. Default
- * configuration is used.
+ * Uses Hystrix to isolate your application from a misbehaving database. Default configuration is used.
  *
  * @author jewzaam
  */
@@ -52,7 +51,13 @@ public class MongoUpsertCommand extends HystrixCommand<Result> {
     @Override
     protected Result run() {
         String json = converter.toJson(upsert);
-        DBObject dbObj = converter.fromJson(json, BasicDBObject.class);
+
+        DBObject dbObj;
+        if (upsert instanceof DBObject) {
+            dbObj = (DBObject) upsert;
+        } else {
+            dbObj = converter.fromJson(json, BasicDBObject.class);
+        }
 
         try {
             db.requestStart();

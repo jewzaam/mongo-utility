@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with mongo-utility.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.namal.mongo.command;
+package org.jewzaam.mongo.command;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
