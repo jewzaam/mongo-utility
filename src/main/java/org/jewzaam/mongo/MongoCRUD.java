@@ -22,6 +22,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.jewzaam.mongo.command.MongoDropCommand;
@@ -155,8 +157,7 @@ public class MongoCRUD {
     }
 
     /**
-     * If an _id is supplied on the object it will do an upsert, else will do
-     * insert.
+     * If an _id is supplied on the object it will do an upsert, else will do insert.
      *
      * @param collectionName
      * @param dbObj
@@ -178,6 +179,35 @@ public class MongoCRUD {
 
     public <T> Iterator<T> find(String collectionName, T search) {
         return new MongoFindCommand<>(db, collectionName, search, null, -1, converter, (Class<T>) search.getClass()).execute();
+    }
+
+    public <T> Iterator<T> find(String collectionName, DBObject dbObj, Class<T> clazz) {
+        return new MongoFindCommand<>(db, collectionName, dbObj, null, -1, converter, clazz).execute();
+    }
+
+    /**
+     * Does an OR of the items in the collection.
+     *
+     * @param <T>
+     * @param collectionName
+     * @param or
+     * @return
+     */
+    public <T> Iterator<T> find(String collectionName, Collection<T> searchList) {
+        // convert to json and knit together with $or.
+        StringBuilder buff = new StringBuilder("{$or:[");
+        Iterator<T> itr = searchList.iterator();
+        Class<T> clazz = null;
+        while (itr.hasNext()) {
+            T t = itr.next();
+            clazz = (Class<T>) t.getClass();
+            buff.append(converter.toJson(t));
+            if (itr.hasNext()) {
+                buff.append(",");
+            }
+        }
+        buff.append("]}");
+        return new MongoFindCommand<>(db, collectionName, buff.toString(), null, -1, converter, clazz).execute();
     }
 
     public <T> Iterator<T> find(String collectionName, String jsonQuery, String jsonProjection, Class<T> clazz) {

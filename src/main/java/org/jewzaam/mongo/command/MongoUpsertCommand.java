@@ -20,11 +20,13 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
 import org.jewzaam.mongo.Result;
 import org.jewzaam.mongo.convert.Converter;
+import org.jewzaam.mongo.model.Prepareable;
 
 /**
  * Uses Hystrix to isolate your application from a misbehaving database. Default configuration is used.
@@ -50,13 +52,17 @@ public class MongoUpsertCommand extends HystrixCommand<Result> {
 
     @Override
     protected Result run() {
+        if (upsert instanceof Prepareable) {
+            ((Prepareable) upsert).prepare();
+        }
+        
         String json = converter.toJson(upsert);
 
         DBObject dbObj;
         if (upsert instanceof DBObject) {
             dbObj = (DBObject) upsert;
         } else {
-            dbObj = converter.fromJson(json, BasicDBObject.class);
+            dbObj = (DBObject) JSON.parse(json);
         }
 
         try {

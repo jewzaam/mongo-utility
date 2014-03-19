@@ -16,11 +16,11 @@
  */
 package org.jewzaam.mongo.command;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
@@ -28,8 +28,7 @@ import org.jewzaam.mongo.MongoIterator;
 import org.jewzaam.mongo.convert.Converter;
 
 /**
- * Uses Hystrix to isolate your application from a misbehaving database. Default
- * configuration is used.
+ * Uses Hystrix to isolate your application from a misbehaving database. Default configuration is used.
  *
  * @author jewzaam
  * @param <T>
@@ -37,7 +36,7 @@ import org.jewzaam.mongo.convert.Converter;
 public class MongoFindCommand<T> extends HystrixCommand<MongoIterator<T>> {
     private final DB db;
     private final String collectionName;
-    private final T search;
+    private final Object search;
     private String jsonQuery;
     private final String jsonProjection;
     private final int limit;
@@ -55,8 +54,8 @@ public class MongoFindCommand<T> extends HystrixCommand<MongoIterator<T>> {
      * @param converter converter implementation to use
      * @param clazz the Class of object finding
      */
-    public MongoFindCommand(DB db, String collectionName, T search, String jsonProjection,
-            int limit, Converter converter, Class<T> clazz) {
+    public MongoFindCommand(DB db, String collectionName, Object search, String jsonProjection,
+                            int limit, Converter converter, Class<T> clazz) {
         super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("MongoFind"))
                 .andCommandKey(HystrixCommandKey.Factory.asKey("MongoFind"))
         );
@@ -98,16 +97,23 @@ public class MongoFindCommand<T> extends HystrixCommand<MongoIterator<T>> {
 
     @Override
     protected MongoIterator<T> run() {
-        if (null != search) {
-            jsonQuery = converter.toJson(search);
-        }
         DBCollection coll = db.getCollection(collectionName);
 
-        DBObject query = converter.fromJson(jsonQuery, BasicDBObject.class);
+        DBObject query = null;
+        if (search instanceof DBObject) {
+            query = (DBObject) search;
+        } else if (null != search) {
+            jsonQuery = converter.toJson(search);
+        }
+
+        if (query == null) {
+            query = (DBObject) JSON.parse(jsonQuery);
+        }
+
         DBObject projection = null;
 
         if (jsonProjection != null) {
-            projection = converter.fromJson(jsonProjection, BasicDBObject.class);
+            projection = (DBObject) JSON.parse(jsonProjection);
         }
 
         DBCursor cur = coll.find(query, projection);
