@@ -25,7 +25,7 @@ import org.jewzaam.mongo.model.MongoObject;
  *
  * @author jewzaam
  */
-public class Feature extends MongoObject {
+public class Feature<T> extends MongoObject {
     public static final String ATTRIBUTE_GEOMETRY = "geometry";
 
     private final String type = "Feature";
@@ -34,26 +34,26 @@ public class Feature extends MongoObject {
     private final Geometry geometry;
 
     public static Feature createPoint() {
-        return new Feature(new Geometry<double[]>(LocationType.Point));
+        return new Feature<>(new Geometry<double[]>(LocationType.Point));
     }
 
     public static Feature createLineString() {
-        return new Feature(new Geometry<double[][]>(LocationType.LineString));
+        return new Feature<>(new Geometry<double[][]>(LocationType.LineString));
     }
 
     public static Feature createPolygon() {
-        return new Feature(new Geometry<double[][]>(LocationType.Polygon));
+        return new Feature<>(new Geometry<double[][]>(LocationType.Polygon));
     }
 
-    protected <T> Feature(Geometry<T> geometry) {
+    protected Feature(Geometry<T> geometry) {
         this.geometry = geometry;
     }
 
-    public <T> void setCoordinates(T coordiantes) {
+    public void setCoordinates(T coordiantes) {
         geometry.setCoordinates(coordiantes);
     }
     
-    public <T> T getCoordinates() {
+    public T getCoordinates() {
         return (T) geometry.getCoordinates();
     }
 
