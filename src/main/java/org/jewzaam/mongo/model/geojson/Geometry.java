@@ -14,12 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with mongo-utility.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jewzaam.mongo.model.geo;
+package org.jewzaam.mongo.model.geojson;
 
 /**
  *
- * @author nmalik
+ * @author jewzaam
+ * @param <T> double[] or double[][]
  */
-public enum LocationType {
-    Point, LineString, Polygon
+public class Geometry<T> {
+
+    private T coordinates;
+    private final String type;
+
+    public Geometry(LocationType type) {
+        this.type = type.name();
+    }
+
+    public T getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(T coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    public LocationType getType() {
+        return LocationType.valueOf(type);
+    }
 }

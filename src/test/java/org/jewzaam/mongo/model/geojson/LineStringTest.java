@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with mongo-utility.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jewzaam.mongo.model.geo;
+package org.jewzaam.mongo.model.geojson;
 
 import org.jewzaam.mongo.AbstractMongoTest;
 import org.junit.Test;
@@ -24,19 +24,19 @@ import org.junit.Test;
  *
  * @author jewzaam
  */
-public class ShapeTest extends AbstractMongoTest {
+public class LineStringTest extends AbstractMongoTest {
 
     /**
      * Verify that 2dsphere index on point works
      */
     @Test
     public void test2dsphere() {
-        String collectionName = "testpoint";
-        Shape shape = new Shape();
-        shape.setOwner("default");
-        shape.getLocation().setCoordinates(new double[][]{{35.662709, -78.63383600000002}, {35.662708, -78.63383600000001}});
-        crud.upsert(collectionName, shape);
+        String collectionName = getClass().getSimpleName();
+        Feature feature = Feature.createLineString();
+        feature.setOwner("default");
+        feature.setCoordinates(new double[][]{{35.662709, -78.63383600000002}, {35.662708, -78.63383600000001}});
+        crud.upsert(collectionName, feature);
 
-        crud.createIndex2dsphere(collectionName, Shape.ATTRIBUTE_LOCATION);
+        crud.createIndex2dsphere(collectionName, Feature.ATTRIBUTE_GEOMETRY);
     }
 }

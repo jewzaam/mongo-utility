@@ -20,7 +20,7 @@ import org.json.JSONException;
 import org.junit.Test;
 import org.jewzaam.mongo.convert.Converter;
 import org.jewzaam.mongo.convert.GsonConverter;
-import org.jewzaam.mongo.model.geo.LocationType;
+import org.jewzaam.mongo.model.geojson.LocationType;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 /**

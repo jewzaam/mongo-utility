@@ -14,29 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with mongo-utility.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jewzaam.mongo.model.geo;
-
-import org.jewzaam.mongo.AbstractMongoTest;
-import org.junit.Test;
+package org.jewzaam.mongo.model.geojson;
 
 /**
- * Verify things about point.
  *
- * @author jewzaam
+ * @author nmalik
  */
-public class PointTest extends AbstractMongoTest {
-
-    /**
-     * Verify that 2dsphere index on point works
-     */
-    @Test
-    public void test2dsphere() {
-        String collectionName = "testpoint";
-        Point point = new Point();
-        point.setOwner("default");
-        point.getLocation().setCoordinate(new double[]{35.662709, -78.63383600000002});
-        crud.upsert(collectionName, point);
-
-        crud.createIndex2dsphere(collectionName, Point.ATTRIBUTE_LOCATION);
-    }
+public enum LocationType {
+    Point, LineString, Polygon
 }
