@@ -45,12 +45,16 @@ public class Feature extends MongoObject {
         return new Feature(new Geometry<double[][]>(LocationType.Polygon));
     }
 
-    private <T> Feature(Geometry<T> geometry) {
+    protected <T> Feature(Geometry<T> geometry) {
         this.geometry = geometry;
     }
 
     public <T> void setCoordinates(T coordiantes) {
         geometry.setCoordinates(coordiantes);
+    }
+    
+    public <T> T getCoordinates() {
+        return (T) geometry.getCoordinates();
     }
 
     public Map<String, Object> getProperties() {
